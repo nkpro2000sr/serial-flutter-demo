@@ -42,10 +42,6 @@ class Serial implements serialIntf.Serial {
     }
   }
 
-  int get bytesAvailable {
-    return _libserialportPort.bytesAvailable;
-  }
-
   Stream<Uint8List> get readerStream {
     if (Platform.isAndroid || Platform.isIOS) {
       return _usbSerialPort.inputStream;

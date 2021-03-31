@@ -9,8 +9,6 @@ class Serial {
 
   Future<bool> open() async {return false;}
 
-  int get bytesAvailable {return 0;}
-
   Stream<Uint8List> get readerStream {return Stream.empty();}
 
   Future<void> write(Uint8List data) async {}
