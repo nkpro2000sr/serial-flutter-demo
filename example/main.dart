@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'src/serial/serial.dart'
-    if (dart.library.io) 'src/serial/serial_main.dart';
+    if (dart.library.io) 'src/serial/serial_main.dart'
+    if (dart.library.html) 'src/serial/serial_web.dart';
 
 Future<void> main() async => runApp(App());
 
