@@ -56,7 +56,7 @@ class Serial implements serialIntf.Serial {
     }
   }
 
-  Future<bool> open([int baudrate = 115200]) async {
+  Future<bool> open([int baudrate = 1000000]) async {
     if (Platform.isAndroid || Platform.isIOS) {
       bool rtn = await _usbSerialPort.open();
       _usbSerialPort.setPortParameters(
