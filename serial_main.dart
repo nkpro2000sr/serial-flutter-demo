@@ -65,7 +65,9 @@ class Serial implements serialIntf.Serial {
       return rtn;
     } else {
       bool rtn = _libserialportPort.openReadWrite();
-      _libserialportPort.config.baudRate = baudrate;
+      var config = _libserialportPort.config;
+      config.baudRate = baudrate;
+      _libserialportPort.config = config;
       return rtn;
     }
   }
