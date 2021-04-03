@@ -5,7 +5,13 @@ import 'serial.dart' as serialIntf;
 class Serial implements serialIntf.Serial {
   Serial(dynamic device); // yet to write implementations.
 
+  dynamic get port {}
+
   static Future<List<dynamic>> listDevices() async {
+    return [];
+  }
+
+  static Future<List<dynamic>> listDevicesWithId(List<List<int>> vidPidPairs) async {
     return [];
   }
 

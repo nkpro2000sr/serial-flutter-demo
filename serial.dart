@@ -3,7 +3,13 @@ import 'dart:typed_data';
 class Serial {
   Serial(dynamic device);
 
+  dynamic get port {}
+
   static Future<List<dynamic>> listDevices() async {
+    return [];
+  }
+
+  static Future<List<dynamic>> listDevicesWithId(List<List<int>> vidPidPairs) async {
     return [];
   }
 

@@ -17,6 +17,14 @@ class Serial implements serialIntf.Serial {
     }
   }
 
+  dynamic get port {
+    if (Platform.isAndroid || Platform.isIOS) {
+      return _usbSerialPort;
+    } else {
+      return _libserialportPort;
+    }
+  }
+
   static Future<List<dynamic>> listDevices() async {
     if (Platform.isAndroid || Platform.isIOS) {
       List<dynamic> list = (await UsbSerial.listDevices());
@@ -24,6 +32,27 @@ class Serial implements serialIntf.Serial {
     } else {
       List<dynamic> list = SerialPort.availablePorts;
       return list;
+    }
+  }
+
+  static Future<List<dynamic>> listDevicesWithId(List<List<int>> vidPidPairs) async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      List<dynamic> list = (await UsbSerial.listDevices());
+      return [
+        for (var d in list)
+          if (vidPidPairs.any((e) => e[0]==d.vid && e[1]==d.pid))
+            d
+      ];
+    } else {
+      List<dynamic> list = SerialPort.availablePorts;
+      return [
+        for (var d in list.map((e) => SerialPort(e)))
+          if (vidPidPairs.any((e) {
+            try {return e[0]==d.vendorId && e[1]==d.productId;}
+            on SerialPortError {return false;}
+            }))
+              d.name
+      ];
     }
   }
 
@@ -37,7 +66,6 @@ class Serial implements serialIntf.Serial {
     } else {
       bool rtn = _libserialportPort.openReadWrite();
       _libserialportPort.config.baudRate = baudrate;
-      _libserialportPort.config.dispose();
       return rtn;
     }
   }
