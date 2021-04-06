@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 class Serial {
+  Future onReady;
+
   Serial(dynamic device);
 
   dynamic get port {}
@@ -13,7 +15,7 @@ class Serial {
     return [];
   }
 
-  Future<bool> open() async {return false;}
+  Future<bool> open([int baudrate]) async {return false;}
 
   Stream<Uint8List> get readerStream {return Stream.empty();}
 

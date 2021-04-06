@@ -6,14 +6,19 @@ import 'serial.dart' as serialIntf;
 
 
 class Serial implements serialIntf.Serial {
+  Future onReady; // await onReady before opening port
   UsbPort _usbSerialPort; // For ANDROID & IOS
   SerialPort _libserialportPort; // For MACOS, LINUX & WINDOWS
 
   Serial(dynamic device) {
     if (Platform.isAndroid || Platform.isIOS) {
-      _usbSerialPort = device.create();
+      onReady = Future(() async {
+        _usbSerialPort = await device.create();
+      });
     } else {
-      _libserialportPort = SerialPort(device);
+      onReady = Future(() async {
+        _libserialportPort = SerialPort(device);
+      });
     }
   }
 

@@ -34,29 +34,35 @@ class _AppState extends State<MyApp> {
               // _USB_PID = [0x00DF, 0xEA60]
               var _list = await Serial.listDevicesWithId([[0x04D8, 0x00DF], [0x10C4, 0xEA60]]);
 
-              _list.forEach((device) async {
+              _list.asMap().forEach((i, device) async {
+                try{
+                  var port = Serial(device);
+                  await port.onReady;
 
-                var port = Serial(device);
+                  if (! await port.open()) {
+                    throw Exception("Failed to open");
+                  }
 
-                if (! await port.open()) {
-                  throw Exception("Failed to open");
-                }
+                  versions.add('');
+                  StreamSubscription subscription;
+                  subscription = port.readerStream.listen((event) {
+                    setState(() {
+                      versions[i] += String.fromCharCodes(event);
+                    });
+                  }, cancelOnError: true);
 
-                StreamSubscription subscription;
-                subscription = port.readerStream.listen((event) async {
-                  setState(() {
-                    versions.add(String.fromCharCodes(event));
+                  await port.write(Uint8List.fromList('\x0b\x05'.codeUnits));
+
+                  Future.delayed(Duration(seconds:2), () async { // timeout
+                    await subscription.cancel();
+                    await port.close();
                   });
-                  await subscription.cancel();
-                  await port.close();
-                }, cancelOnError: true);
-
-                await port.write(Uint8List.fromList('\x0b\x05'.codeUnits));
-
-                Future.delayed(Duration(seconds:2), () async { // timeout
-                  await subscription.cancel();
-                  await port.close();
-                });
+                } catch (e, t) {
+                  setState(() {
+                    versions.add(e.toString());
+                    versions.add(t.toString());
+                  });
+                }
               });
 
               setState(() {list = _list;});
