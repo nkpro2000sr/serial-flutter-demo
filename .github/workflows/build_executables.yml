@@ -48,15 +48,17 @@ jobs:
 
       - name: Build ios
         working-directory: ./pslab_flutter_demo
-        run: flutter build ios --release --no-codesign
+        run: flutter build ipa --release
 
       - name: Build macos
         working-directory: ./pslab_flutter_demo
-        run: flutter build macos
+        run: |
+          brew install automake libtool
+          flutter build macos
 
       - uses: actions/upload-artifact@v2
         with:
           name: executables
           path: |
             ./pslab_flutter_demo/build/ios/iphoneos/Runner.app
-            ./pslab_flutter_demo/build/app/outputs/apk/release/app-release.apk
+            ./pslab_flutter_demo/build/macos/Build/Products/Release
