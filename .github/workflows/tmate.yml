@@ -29,10 +29,22 @@ jobs:
           flutter-version: '2.0.3'
           channel: 'stable'
 
-      - name: Enable required platforms
+      - name: Flutter script
         working-directory: ./pslab_flutter_demo
-        run: flutter config --enable-macos-desktop --enable-ios --no-enable-linux-desktop --no-enable-windows-desktop --no-enable-android --no-enable-web
+        run: |
+          echo 'flutter doctor' > script.sh
+          echo 'flutter config --enable-macos-desktop --enable-ios --no-enable-linux-desktop --no-enable-windows-desktop --no-enable-android --no-enable-web' >> script.sh
+          echo 'flutter build macos' >> script.sh
+          echo 'flutter build ios --release --no-codesign' >>  script.sh
+
+      - name: Start Mac VNC
+        working-directory: ./pslab_flutter_demo
+        run: |
+          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
+          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes 
+          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw supersecret
+          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
+          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
