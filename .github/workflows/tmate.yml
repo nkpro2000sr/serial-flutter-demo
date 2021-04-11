@@ -36,15 +36,17 @@ jobs:
           echo 'flutter config --enable-macos-desktop --enable-ios --no-enable-linux-desktop --no-enable-windows-desktop --no-enable-android --no-enable-web' >> script.sh
           echo 'flutter build macos' >> script.sh
           echo 'flutter build ios --release --no-codesign' >>  script.sh
+          chmod +x script.sh
 
-      - name: Start Mac VNC
+      - name: Start Mac VNC Script
         working-directory: ./pslab_flutter_demo
         run: |
-          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
-          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes 
-          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw supersecret
-          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
-          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
+          ehco 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all' > start_vnc.sh
+          echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes ' >> start_vnc.sh
+          echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw supersecret' >> start_vnc.sh
+          echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console' >> start_vnc.sh
+          echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate' >> start_vnc.sh
+          chmod +x start_vnc.sh
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
