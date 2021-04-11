@@ -39,13 +39,16 @@ jobs:
           chmod +x script.sh
 
       - name: Start Mac VNC Script
-        working-directory: ./pslab_flutter_demo
         run: |
           echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all' > start_vnc.sh
           echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes ' >> start_vnc.sh
           echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw supersecret' >> start_vnc.sh
           echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console' >> start_vnc.sh
           echo 'sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate' >> start_vnc.sh
+          echo '# Add user for vnc connect' >> start_vnc.sh
+          echo 'sudo dscl . -create /Users/user' >> start_vnc.sh
+          echo 'sudo dscl . -passwd /Users/user passwd' >> start_vnc.sh
+          echo 'sudo dscl . -append /Groups/admin GroupMembership user' >> start_vnc.sh
           chmod +x start_vnc.sh
 
       - name: Setup tmate session
